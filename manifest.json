@@ -1,0 +1,39 @@
+﻿{
+  "name": "Novikov ВЫДАЧА ДЗ",
+  "description": "Облегчает прподавателю выдачу ДЗ",
+  "version": "2",
+  "manifest_version": 2,
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_title": "ДЗ выдача"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*/*"
+      ],
+      "css": [
+        "css.css"
+      ],
+      "js": [
+        "myscript.js"
+      ]
+    }
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
+  },
+  "permissions": [
+    "tabs",
+    "storage",
+    "activeTab",
+    "file://*/*",
+    "http://*/*",
+    "https://*/*"
+  ]
+}
+
+
