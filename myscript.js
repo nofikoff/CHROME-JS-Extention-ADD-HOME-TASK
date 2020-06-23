@@ -144,6 +144,7 @@ chrome.runtime.onMessage.addListener(
                             }
                         )
 
+
                 }//catch название пары
 
             })
