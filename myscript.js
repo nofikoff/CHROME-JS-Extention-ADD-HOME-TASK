@@ -15,27 +15,29 @@ chrome.runtime.onMessage.addListener(
             var myPromise = new Promise((resolve) => {
 
                 console.log("ПЕРВЫЙ ПРОМИС");
-                console.log("ПЕРВЫЙ ПРОМИС");
-                console.log("ПЕРВЫЙ ПРОМИС");
                 console.log(typeof localStorage["app.cur_spec_pr"]);
+                console.log(localStorage["app.cur_spec_pr"], "localStorage[\"app.cur_spec_pr");
 
 
                 // НАЗВАНИЕ ПАРЫ
                 // НАЗВАНИЕ ПАРЫ
+
                 // НАЗВАНИЕ ПАРЫ
 
                 if (
-                    typeof localStorage["app.cur_spec_pr"] !== 'undefined'
+                    typeof localStorage["app.cur_spec_pr"] !== 'undefined' &&
+
+                    localStorage["app.cur_spec_pr"] !== 'null'
 
 
                 ) {
-                    console.log("Ура вижу локал сторидж", localStorage["app.cur_spec_pr"]);
+                    console.log("Ура вижу в локал сторидж название предмета", localStorage["app.cur_spec_pr"]);
                     resolve();
 
                 } else {
 
-                    alert("ПЛАГИН ДЗ: Не вижу текущую группу и тему - Просьба указать");
-                    //
+                    alert("ПЛАГИН ДЗ: Не вижу текущую группу и тему - просьба указать:");
+                    // получаем список групп
                     fetch("https://logbook.itstep.org/homework/get-group-spec", {
                         "headers": {
                             "accept": "application/json, text/plain, */*",
@@ -64,9 +66,7 @@ chrome.runtime.onMessage.addListener(
                             // ролдителя кокаем
                             // ролдителя кокаем
 
-                            console.log(mysource);
-
-
+                            console.log("группы", mysource);
                             //var myjson = '{"groups_spec":{"2364":{"data":[{"id_tgroups":"2364","id_spec":"195","name_tgroups":"SunPM821","name_spec":"Язык сценариев Javascript и библиотека jQuery","order":"18226"},{"id_tgroups":"2364","id_spec":"339","name_tgroups":"SunPM821","name_spec":"Системное программирование","order":"20526"},{"id_tgroups":"2364","id_spec":"340","name_tgroups":"SunPM821","name_spec":"Сетевое программирование","order":"25732"},{"id_tgroups":"2364","id_spec":"376","name_tgroups":"SunPM821","name_spec":"Управление программными проектами","order":"11177"}],"name_tgroups":"SunPM821","id_tgroups":"2364","order":"25732"},"2375":{"data":[{"id_tgroups":"2375","id_spec":"171","name_tgroups":"PE711","name_spec":"Разработка веб-приложений с использованием ASP.NET та AJAX","order":"23693"},{"id_tgroups":"2375","id_spec":"256","name_tgroups":"PE711","name_spec":"Системное программирование","order":"8278"},{"id_tgroups":"2375","id_spec":"257","name_tgroups":"PE711","name_spec":"Сетевое программирование","order":"9461"},{"id_tgroups":"2375","id_spec":"258","name_tgroups":"PE711","name_spec":"Управление программными проектами","order":"10946"},{"id_tgroups":"2375","id_spec":"372","name_tgroups":"PE711","name_spec":"Курсовой проект по .NET Framework","order":"25488"},{"id_tgroups":"2375","id_spec":"373","name_tgroups":"PE711","name_spec":"Командный проект","order":"13106"}],"name_tgroups":"PE711","id_tgroups":"2375","order":"25488"},"2472":{"data":[{"id_tgroups":"2472","id_spec":"166","name_tgroups":"PE811","name_spec":"Разработка веб-страниц на языке разметки HTML5 с использованием каскадных таблиц стилей CSS3","order":"20739"},{"id_tgroups":"2472","id_spec":"173","name_tgroups":"PE811","name_spec":"Язык сценариев Javascript та библиотека jQueri","order":"25972"}],"name_tgroups":"PE811","id_tgroups":"2472","order":"25972"},"2473":{"data":[{"id_tgroups":"2473","id_spec":"166","name_tgroups":"PA812","name_spec":"Разработка веб-страниц на языке разметки HTML5 с использованием каскадных таблиц стилей CSS3","order":"20736"},{"id_tgroups":"2473","id_spec":"173","name_tgroups":"PA812","name_spec":"Язык сценариев Javascript та библиотека jQueri","order":"25431"},{"id_tgroups":"2473","id_spec":"256","name_tgroups":"PA812","name_spec":"Системное программирование","order":"25960"}],"name_tgroups":"PA812","id_tgroups":"2473","order":"25960"},"2876":{"data":[{"id_tgroups":"2876","id_spec":"417","name_tgroups":"FE92","name_spec":"Разработка клиентских сценариев с использованием JavaScript","order":"26104"}],"name_tgroups":"FE92","id_tgroups":"2876","order":"26104"}},"limit":10}';
                             //var mysource = JSON.parse(myjson);
                             // дропдаун ГРУППА
@@ -139,7 +139,7 @@ chrome.runtime.onMessage.addListener(
                             //resolve();
                         })
                         .catch(() => {
-                                alert("Какойто сбой - Пара не выбрана");
+                                alert("Что-то пошло не так. Не вижу список ваших групп");
 
                             }
                         )
@@ -151,6 +151,7 @@ chrome.runtime.onMessage.addListener(
                 .then(() => {
 
 
+                    // сегодня
                     if (typeof localStorage["app.cur_date_pr"] === 'undefined') {
                         localStorage["app.cur_date_pr"] = formatDate(new Date());
                     }
@@ -166,7 +167,6 @@ chrome.runtime.onMessage.addListener(
                     let nowLenta = parseInt(JSON.parse(localStorage["app.cur_lenta_pr"]));
                     for (var i = 1; i <= 10; i++) {
                         let selected = (i == nowLenta) ? 'selected' : '';
-
                         lentaDropdown += `<option value = "${i}" ${selected}>${i}</option>`;
                     }
                     lentaDropdown += '</select>';
@@ -187,9 +187,15 @@ chrome.runtime.onMessage.addListener(
 Текст ДЗ <br><textarea id="myTask">
 описание</textarea>
     
-    <br><br><button id="getTask">-= отправить =-</button></p>
+    <br><br>
+    <button id="getTask">-= отправить =-</button>
+    
+    <input id="myUploadedArchive" type="file"><br>
+    <span class="myRed">Прикреплять файл НЕ обязательно! (ограничение 100Mb)</span><br>
+
+    </p>
     <p><hr><h1 class="myh1">Примечание:</h1><br>
-    - если вызвать плагин в ПРИСУСТВУЮЩИЕ - группа выбирается автоматом<br> 
+    - если вызвать плагин в Logbook ПРИСУСТВУЮЩИЕ - группа выбирается автоматом<br> 
     - если вызвать плагин в любой другой части Logbook - группу и предмет выбираем в ручную<br> 
     - можно выбрать любую дату в прошлом или будущем + произвольный номер пары 0-9 для задания ДЗ<br> 
     - дедлайн рассчитывается автоматом + 2 недели <br> 
@@ -208,6 +214,9 @@ chrome.runtime.onMessage.addListener(
                         //получаем key file
                         load("https://logbook.itstep.org/auth/get-upload-token",
                             "",
+                            // ловим ключи для апллоуда
+                            // ловим ключи для апллоуда
+                            // ловим ключи для апллоуда
                             e => {
                                 console.log(JSON.parse(e));
                                 keyToken = JSON.parse(e).token;
@@ -219,7 +228,19 @@ chrome.runtime.onMessage.addListener(
 
                                 // форма аплоуда файла
                                 let formData = new FormData();
-                                let file = new File(textArray, "HOMETASK_" + curdate_input.value + "_" + tema.value + ".txt", {type: "text/plain"});
+                                // ИЛИ текстовй файл с содержимым из поля
+
+                                let file;
+                                //
+                                if (myUploadedArchive.files.length === 0) {
+                                    console.log("no files selected");
+                                    file = new File(textArray, "HOMETASK_" + curdate_input.value + "_" + tema.value + ".txt", {type: "text/plain"});
+                                } else {
+                                    file = myUploadedArchive.files[0];
+                                }
+
+                                // ИЛИ АРХИВ по кнопке АПЛОУД
+
                                 formData.append('action', 'create');
                                 formData.append('env', 'prod');
                                 formData.append('token', keyToken);
@@ -248,7 +269,6 @@ chrome.runtime.onMessage.addListener(
                                         let myParams = {
                                             filename: result.name,
                                             id_spec: JSON.parse(localStorage["app.cur_spec_pr"]).id_spec,
-                                            //lenta_para: parseInt(JSON.parse(localStorage["app.cur_lenta_pr"])),
                                             id_group: parseInt(localStorage["app.cur_group_pr"].replace(/["']/g, ""))
                                         };
 
@@ -259,7 +279,7 @@ chrome.runtime.onMessage.addListener(
                                         console.error('Error:', error);
                                     })
 
-
+                                    // ШЛЕМ ДОМАШКУ с файлом полученном на предыдущем шаге
                                     .then((myParams) => {
 
                                         // плюс две недели в миллисеундах
