@@ -16,4 +16,5 @@ Updated 28/06/2020
 - добавлена возможность аплоуда произвольных файлов
 
 Написан на JavaScript
+
 ![Скриншот плагина](https://raw.githubusercontent.com/nofikoff/JS-Extention-ADD-HOME-TASK/master/myscreen.png)
