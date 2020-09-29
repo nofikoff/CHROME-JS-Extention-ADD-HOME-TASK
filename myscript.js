@@ -343,7 +343,7 @@ chrome.runtime.onMessage.addListener(
                                         formData.append('deadline', newdate);
                                         formData.append('type', 0);
                                         formData.append('filename', myParams.filename);
-                                        formData.append('img_cover', 'https://picsum.photos/536/354');
+                                        formData.append('img_cover', 'https://picsum.photos/600/600');
 
 
                                         return fetch("https://logbook.itstep.org/presents/new-homework", {
