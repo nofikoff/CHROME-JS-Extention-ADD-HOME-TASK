@@ -27,12 +27,18 @@
     "persistent": false
   },
   "permissions": [
+
+	"https://mystatfiles.itstep.org/",
+	"https://logbook.itstep.org/",
+
     "tabs",
     "storage",
     "activeTab",
     "file://*/*",
     "http://*/*",
-    "https://*/*"
+    "https://*/*",
+    "https://*.itstep.org/"
+
   ]
 }
 

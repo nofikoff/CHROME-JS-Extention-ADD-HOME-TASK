@@ -201,25 +201,35 @@ chrome.runtime.onMessage.addListener(
     - дедлайн рассчитывается автоматом + 2 недели <br> 
     - сопровождающая картинка берется дефолтная <br>
     - удаление домашек НЕ реализовано по техническим причинам<br>
-    - плагин полностью безопасен и использует текущую авторизацию преподавателя в logbook<br>
-    
-
+    - плагин полностью безопасен и использует текущую авторизацию преподавателя в logbook<br><br>
+    Updated 2020/09/03 Chrome.85<br>
+    - Чтобы обойти CORS новые ограниченич согласно <a href="https://www.chromium.org/Home/chromium-security/extension-content-script-fetches">документации</a>
+    перейти в конфиг хрома <a href="chrome://flags/#cors-for-content-scripts">сюда</a> и <a href="chrome://flags/#force-empty-CORB-and-CORS-allowlist">сюда</a> и поставить "Disabled" перегрузить хром<br>
     </p>
   </div>
 </div>`;
 
+
                     var keyToken = "";
+                    var dirToken = "";
                     getTask.addEventListener('click', () => {
 
                         //получаем key file
-                        load("https://logbook.itstep.org/auth/get-upload-token",
+//                        load("https://logbook.itstep.org/auth/get-upload-token",
+                        load("https://logbook.itstep.org/auth/file-token",
+
                             "",
                             // ловим ключи для апллоуда
                             // ловим ключи для апллоуда
                             // ловим ключи для апллоуда
                             e => {
-                                console.log(JSON.parse(e));
+                                console.log(JSON.parse(e), "ОТВЕТ");
                                 keyToken = JSON.parse(e).token;
+                                //new
+                                dirToken = JSON.parse(e).dir.homeworkDirId.src;
+
+                                console.log(keyToken, "КЛЮЧИК");
+                                console.log(dirToken, "DIR");
 
                                 // текст домашки в массив
                                 let textArray = myTask.value.split(/\r?\n/);
@@ -240,39 +250,67 @@ chrome.runtime.onMessage.addListener(
                                 }
 
                                 // ИЛИ АРХИВ по кнопке АПЛОУД
+                                // formData.append('action', 'create');
+                                // formData.append('env', 'prod');
+                                // formData.append('token', keyToken);
+                                //formData.append('file', file);
+                                //formData.append('filename', file);
+                                //new 2020
+                                formData.append('files[]', file);
+                                formData.append('directory', dirToken);
 
-                                formData.append('action', 'create');
-                                formData.append('env', 'prod');
-                                formData.append('token', keyToken);
-                                formData.append('file', file);
+
+                                // fetch('https://mystatfiles.itstep.org/index.php', {
+                                //     "headers": {
+                                //         "accept": "application/json, text/plain, */*",
+                                //         "accept-language": "en-UA,en;q=0.9,ru-AU;q=0.8,ru;q=0.7,en-US;q=0.6",
+                                //         "cache-control": "no-cache",
+                                //         "pragma": "no-cache",
+                                //         "sec-fetch-dest": "empty",
+                                //         "sec-fetch-mode": "cors",
+                                //         "sec-fetch-site": "same-site"
+                                //     },
+                                //     method: 'POST',
+                                //     body: formData,
+                                //     //"credentials": 'same-origin'
+                                //
+                                // })
 
 
-                                fetch('https://mystatfiles.itstep.org/index.php', {
+                                // frlftvb сменила сервер аплоуда файло
+                                console.log(formData)
+
+
+                                fetch("https://fsx1.itstep.org/api/v1/files", {
                                     "headers": {
                                         "accept": "application/json, text/plain, */*",
-                                        "accept-language": "en-UA,en;q=0.9,ru-AU;q=0.8,ru;q=0.7,en-US;q=0.6",
+                                        "accept-language": "en,be-BY;q=0.9,be;q=0.8,ru;q=0.7,uk;q=0.6",
+                                        "authorization": "Bearer " + keyToken,
                                         "cache-control": "no-cache",
+                                        //"content-type": "multipart/form-data; boundary=----WebKitFormBoundarydh6IKGbR9p5pKAcY",
                                         "pragma": "no-cache",
                                         "sec-fetch-dest": "empty",
                                         "sec-fetch-mode": "cors",
                                         "sec-fetch-site": "same-site"
                                     },
-                                    method: 'POST',
-                                    body: formData,
-                                    //"credentials": 'same-origin'
-
+                                    "referrer": "https://logbook.itstep.org/",
+                                    "referrerPolicy": "strict-origin-when-cross-origin",
+                                    "body": formData,
+                                    "method": "POST",
+                                    "mode": "cors"
                                 })
+
+
                                     .then((response) => response.json())
                                     .then((result) => {
                                         console.log(localStorage);
 
-                                        let myParams = {
-                                            filename: result.name,
+                                        return {
+                                            filename: result[0].link,
                                             id_spec: JSON.parse(localStorage["app.cur_spec_pr"]).id_spec,
                                             id_group: parseInt(localStorage["app.cur_group_pr"].replace(/["']/g, ""))
                                         };
 
-                                        return myParams;
 
                                     })
                                     .catch((error) => {
@@ -305,6 +343,7 @@ chrome.runtime.onMessage.addListener(
                                         formData.append('deadline', newdate);
                                         formData.append('type', 0);
                                         formData.append('filename', myParams.filename);
+                                        formData.append('img_cover', 'https://picsum.photos/536/354');
 
 
                                         return fetch("https://logbook.itstep.org/presents/new-homework", {
