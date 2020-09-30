@@ -210,8 +210,9 @@ chrome.runtime.onMessage.addListener(
 </div>`;
 
 
-                    var keyToken = "";
-                    var dirToken = "";
+                    let keyToken = "";
+                    let dirToken = "";
+                    let temporaryImgUrl = "";
                     getTask.addEventListener('click', () => {
 
                         //получаем key file
@@ -280,26 +281,42 @@ chrome.runtime.onMessage.addListener(
                                 // frlftvb сменила сервер аплоуда файло
                                 console.log(formData)
 
+                                    // получим сучаюную картинку адрес
+                                    // получим сучаюную картинку адрес
+                                    // получим сучаюную картинку адрес
+                                    fetch("https://picsum.photos/600/600", {
+                                            method: 'GET',
+                                            redirect: 'follow'
+                                        })
 
-                                fetch("https://fsx1.itstep.org/api/v1/files", {
-                                    "headers": {
-                                        "accept": "application/json, text/plain, */*",
-                                        "accept-language": "en,be-BY;q=0.9,be;q=0.8,ru;q=0.7,uk;q=0.6",
-                                        "authorization": "Bearer " + keyToken,
-                                        "cache-control": "no-cache",
-                                        //"content-type": "multipart/form-data; boundary=----WebKitFormBoundarydh6IKGbR9p5pKAcY",
-                                        "pragma": "no-cache",
-                                        "sec-fetch-dest": "empty",
-                                        "sec-fetch-mode": "cors",
-                                        "sec-fetch-site": "same-site"
-                                    },
-                                    "referrer": "https://logbook.itstep.org/",
-                                    "referrerPolicy": "strict-origin-when-cross-origin",
-                                    "body": formData,
-                                    "method": "POST",
-                                    "mode": "cors"
-                                })
+                                    .then(response => {
+                                        temporaryImgUrl = response.url;
+                                    })
+                                    //
+                                    .catch(function (err) {
+                                        console.info(err + " url: " + url);
+                                    })
 
+                                    .then(
+                                        () => fetch("https://fsx1.itstep.org/api/v1/files", {
+                                            "headers": {
+                                                "accept": "application/json, text/plain, */*",
+                                                "accept-language": "en,be-BY;q=0.9,be;q=0.8,ru;q=0.7,uk;q=0.6",
+                                                "authorization": "Bearer " + keyToken,
+                                                "cache-control": "no-cache",
+                                                //"content-type": "multipart/form-data; boundary=----WebKitFormBoundarydh6IKGbR9p5pKAcY",
+                                                "pragma": "no-cache",
+                                                "sec-fetch-dest": "empty",
+                                                "sec-fetch-mode": "cors",
+                                                "sec-fetch-site": "same-site"
+                                            },
+                                            "referrer": "https://logbook.itstep.org/",
+                                            "referrerPolicy": "strict-origin-when-cross-origin",
+                                            "body": formData,
+                                            "method": "POST",
+                                            "mode": "cors"
+                                        })
+                                    )
 
                                     .then((response) => response.json())
                                     .then((result) => {
@@ -311,13 +328,13 @@ chrome.runtime.onMessage.addListener(
                                             id_group: parseInt(localStorage["app.cur_group_pr"].replace(/["']/g, ""))
                                         };
 
-
                                     })
                                     .catch((error) => {
                                         console.error('Error:', error);
                                     })
 
                                     // ШЛЕМ ДОМАШКУ с файлом полученном на предыдущем шаге
+
                                     .then((myParams) => {
 
                                         // плюс две недели в миллисеундах
@@ -343,7 +360,7 @@ chrome.runtime.onMessage.addListener(
                                         formData.append('deadline', newdate);
                                         formData.append('type', 0);
                                         formData.append('filename', myParams.filename);
-                                        formData.append('img_cover', 'https://picsum.photos/600/600');
+                                        formData.append('img_cover', temporaryImgUrl);
 
 
                                         return fetch("https://logbook.itstep.org/presents/new-homework", {
