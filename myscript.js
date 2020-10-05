@@ -199,11 +199,11 @@ chrome.runtime.onMessage.addListener(
     - если вызвать плагин в любой другой части Logbook - группу и предмет выбираем в ручную<br> 
     - можно выбрать любую дату в прошлом или будущем + произвольный номер пары 0-9 для задания ДЗ<br> 
     - дедлайн рассчитывается автоматом + 2 недели <br> 
-    - сопровождающая картинка берется дефолтная <br>
+    - фото природы для обложки ДЗ, берется с внешнего сервиса случайнм образом<br>
     - удаление домашек НЕ реализовано по техническим причинам<br>
     - плагин полностью безопасен и использует текущую авторизацию преподавателя в logbook<br><br>
     Updated 2020/09/03 Chrome.85<br>
-    - Чтобы обойти CORS новые ограниченич согласно <a href="https://www.chromium.org/Home/chromium-security/extension-content-script-fetches">документации</a>
+    - чтобы обойти CORS новые ограниченич согласно <a href="https://www.chromium.org/Home/chromium-security/extension-content-script-fetches">документации</a>
     перейти в конфиг хрома <a href="chrome://flags/#cors-for-content-scripts">сюда</a> и <a href="chrome://flags/#force-empty-CORB-and-CORS-allowlist">сюда</a> и поставить "Disabled" перегрузить хром<br>
     </p>
   </div>
