@@ -218,7 +218,6 @@ chrome.runtime.onMessage.addListener(
                         //получаем key file
 //                        load("https://logbook.itstep.org/auth/get-upload-token",
                         load("https://logbook.itstep.org/auth/file-token",
-
                             "",
                             // ловим ключи для апллоуда
                             // ловим ключи для апллоуда
@@ -418,12 +417,12 @@ function load(url, json, callback) {
     xhr.setRequestHeader("content-type", "application/json;charset=UTF-8");
     console.log(json.length);
     xhr.setRequestHeader("authority", 'logbook.itstep.org');
-    xhr.setRequestHeader("user-agent", 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36');
-    xhr.setRequestHeader("origin", 'https://logbook.itstep.org');
-    xhr.setRequestHeader("sec-fetch-site", 'same-origin');
-    xhr.setRequestHeader("sec-fetch-mode", 'cors');
-    xhr.setRequestHeader("sec-fetch-dest", 'empty');
-    xhr.setRequestHeader("content-length", json.length);
+    // xhr.setRequestHeader("user-agent", 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36');
+    // xhr.setRequestHeader("origin", 'https://logbook.itstep.org');
+    // xhr.setRequestHeader("sec-fetch-site", 'same-origin');
+    // xhr.setRequestHeader("sec-fetch-mode", 'cors');
+    // xhr.setRequestHeader("sec-fetch-dest", 'empty');
+    // xhr.setRequestHeader("content-length", json.length);
     xhr.setRequestHeader("accept", "application/json, text/plain, */*");
     xhr.send(json);
 }
